@@ -1,23 +1,35 @@
 import React, { Component } from 'react';
+import Constants from 'expo-constants';
 import Home from './HomeComponent';
-import Reservation from './ReservationComponent';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
-import Contact from './ContactComponent'
-import About from './AboutComponent'
-import Constants from 'expo-constants';
+import About from './AboutComponent';
+import Contact from './ContactComponent';
+import Reservation from './ReservationComponent';
 import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerItems } from "react-navigation-drawer";
 import { createAppContainer } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
+import { connect } from 'react-redux';
+import {
+    fetchCampsites, fetchComments, fetchPromotions,
+    fetchPartners
+} from '../redux/ActionCreators';
 
+
+const mapDispatchToProps = {
+    fetchCampsites,
+    fetchComments,
+    fetchPromotions,
+    fetchPartners
+};
 const DirectoryNavigator = createStackNavigator(
     {
-        Directory: { 
+        Directory: {
             screen: Directory,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 headerLeft: <Icon
                     name='list'
                     type='font-awesome'
@@ -41,13 +53,12 @@ const DirectoryNavigator = createStackNavigator(
         }
     }
 );
-
 const HomeNavigator = createStackNavigator(
     {
         Home: { screen: Home }
     },
     {
-        defaultNavigationOptions: ({navigation}) => ({
+        defaultNavigationOptions: ({ navigation }) => ({
             headerStyle: {
                 backgroundColor: '#5637DD'
             },
@@ -64,13 +75,12 @@ const HomeNavigator = createStackNavigator(
         })
     }
 );
-
 const AboutNavigator = createStackNavigator(
     {
         About: { screen: About }
     },
     {
-        defaultNavigationOptions: ({navigation}) => ({
+        defaultNavigationOptions: ({ navigation }) => ({
             headerStyle: {
                 backgroundColor: '#5637DD'
             },
@@ -87,13 +97,12 @@ const AboutNavigator = createStackNavigator(
         })
     }
 );
-
 const ContactNavigator = createStackNavigator(
     {
         Contact: { screen: Contact }
     },
     {
-        defaultNavigationOptions: ({navigation}) => ({
+        defaultNavigationOptions: ({ navigation }) => ({
             headerStyle: {
                 backgroundColor: '#5637DD'
             },
@@ -110,13 +119,12 @@ const ContactNavigator = createStackNavigator(
         })
     }
 );
-
 const ReservationNavigator = createStackNavigator(
     {
         Reservation: { screen: Reservation }
     },
     {
-        defaultNavigationOptions: ({navigation}) => ({
+        defaultNavigationOptions: ({ navigation }) => ({
             headerStyle: {
                 backgroundColor: '#5637DD'
             },
@@ -133,17 +141,20 @@ const ReservationNavigator = createStackNavigator(
         })
     }
 );
-
 const CustomDrawerContentComponent = props => (
     <ScrollView>
-        <SafeAreaView 
+        <SafeAreaView
             style={styles.container}
-            forceInset={{top: 'always', horizontal: 'never'}}>
+            forceInset={{ top: 'always', horizontal: 'never' }}
+        >
             <View style={styles.drawerHeader}>
-                <View style={{flex: 1}}>
-                    <Image source={require('./images/logo.png')} style={styles.drawerImage} />
+                <View style={{ flex: 1 }}>
+                    <Image
+                        source={require('./images/logo.png')}
+                        style={styles.drawerImage}
+                    />
                 </View>
-                <View style={{flex: 2}}>
+                <View style={{ flex: 2 }}>
                     <Text style={styles.drawerHeaderText}>NuCamp</Text>
                 </View>
             </View>
@@ -151,14 +162,12 @@ const CustomDrawerContentComponent = props => (
         </SafeAreaView>
     </ScrollView>
 );
-
-
 const MainNavigator = createDrawerNavigator(
     {
         Home: {
             screen: HomeNavigator,
             navigationOptions: {
-                drawerIcon: ({tintColor}) => (
+                drawerIcon: ({ tintColor }) => (
                     <Icon
                         name='home'
                         type='font-awesome'
@@ -171,7 +180,7 @@ const MainNavigator = createDrawerNavigator(
         Directory: {
             screen: DirectoryNavigator,
             navigationOptions: {
-                drawerIcon: ({tintColor}) => (
+                drawerIcon: ({ tintColor }) => (
                     <Icon
                         name='list'
                         type='font-awesome'
@@ -185,7 +194,7 @@ const MainNavigator = createDrawerNavigator(
             screen: ReservationNavigator,
             navigationOptions: {
                 drawerLabel: 'Reserve Campsite',
-                drawerIcon: ({tintColor}) => (
+                drawerIcon: ({ tintColor }) => (
                     <Icon
                         name='tree'
                         type='font-awesome'
@@ -199,7 +208,7 @@ const MainNavigator = createDrawerNavigator(
             screen: AboutNavigator,
             navigationOptions: {
                 drawerLabel: 'About Us',
-                drawerIcon: ({tintColor}) => (
+                drawerIcon: ({ tintColor }) => (
                     <Icon
                         name='info-circle'
                         type='font-awesome'
@@ -213,7 +222,7 @@ const MainNavigator = createDrawerNavigator(
             screen: ContactNavigator,
             navigationOptions: {
                 drawerLabel: 'Contact Us',
-                drawerIcon: ({tintColor}) => (
+                drawerIcon: ({ tintColor }) => (
                     <Icon
                         name='address-card'
                         type='font-awesome'
@@ -229,25 +238,29 @@ const MainNavigator = createDrawerNavigator(
         contentComponent: CustomDrawerContentComponent
     }
 );
-
 const AppNavigator = createAppContainer(MainNavigator)
-
 class Main extends Component {
+    componentDidMount() {
+        this.props.fetchCampsites();
+        this.props.fetchComments();
+        this.props.fetchPromotions();
+        this.props.fetchPartners();
+    }
     render() {
         return (
-            <View style={{
-                flex: 1,
-                paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight
-            }}>
+            <View
+                style={{
+                    flex: 1,
+                    paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight
+                }}>
                 <AppNavigator />
             </View>
         );
     }
 }
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
     },
     drawerHeader: {
         backgroundColor: '#5637DD',
@@ -273,5 +286,4 @@ const styles = StyleSheet.create({
         fontSize: 24
     }
 });
-
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);
