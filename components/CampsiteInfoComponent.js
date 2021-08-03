@@ -15,8 +15,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     postFavorite: campsiteId => postFavorite(campsiteId),
-    postComment: campsiteId => postComment(campsiteId)
+    postComment: (campsiteId, rating, author, text) => 
+        postComment(campsiteId, rating, author, text),
 };
+
 function RenderCampsite(props) {
     const {campsite} = props;
     if (campsite) {
@@ -44,7 +46,7 @@ function RenderCampsite(props) {
                     <Icon
                         name={'pencil'}
                         type='font-awesome'
-                        color='#f50'
+                        color='#5637DD'
                         raised
                         reverse
                         onPress={() =>
@@ -101,7 +103,12 @@ class CampsiteInfo extends Component {
         this.setState({showModal: !this.state.showModal});
     }
     handleComment(campsiteId){
-        this.props.postComment();
+        this.props.postComment(
+            campsiteId,
+            this.state.rating,
+            this.state.author,
+            this.state.text
+        );
         this.toggleModal()
     }
     resetForm(){
