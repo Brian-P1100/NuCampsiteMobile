@@ -18,7 +18,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     postFavorite: campsiteId => postFavorite(campsiteId),
     postComment: (campsiteId, rating, author, text) => 
-        postComment(campsiteId, rating, author, text),
+    postComment(campsiteId, rating, author, text),
 };
 
 function RenderCampsite(props) {
@@ -27,7 +27,9 @@ function RenderCampsite(props) {
 
     const view = React.createRef();
 
-    const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
+    const recognizeDragLeft = ({dx}) => (dx < -200) ? true : false;
+
+    const recognizeComment = ({dx}) => (dx > 200) ? true : false;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
@@ -36,7 +38,7 @@ function RenderCampsite(props) {
         },
         onPanResponderEnd: (e, gestureState) => {
             console.log('pan responder end', gestureState);
-            if (recognizeDrag(gestureState)) {
+            if (recognizeDragLeft(gestureState)) {
                 Alert.alert(
                     'Add Favorite',
                     'Are you sure you wish to add ' + campsite.name + ' to favorites?',
@@ -55,7 +57,11 @@ function RenderCampsite(props) {
                     { cancelable: false }
                 );
             }
-            return true;
+            else if (recognizeComment(gestureState)) {
+                return toggleModal;
+                
+                
+            }
         }
     });
 
