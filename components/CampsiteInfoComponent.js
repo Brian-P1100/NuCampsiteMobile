@@ -58,10 +58,10 @@ function RenderCampsite(props) {
                 );
             }
             else if (recognizeComment(gestureState)) {
-                return toggleModal;
-                
-                
+                props.onShowModal();
+             
             }
+            return true;
         }
     });
 

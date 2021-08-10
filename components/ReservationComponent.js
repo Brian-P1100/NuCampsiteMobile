@@ -26,7 +26,28 @@ class Reservation extends Component {
   
     handleReservation() {
         console.log(JSON.stringify(this.state));
-        this.toggleModal();
+        const message = `Number of Campers: ${this.state.campers}
+                        \nHike-In? ${this.state.hikeIn}
+                        \nDate: ${this.state.date.toLocaleDateString('en-US')}`;
+        Alert.alert(
+            'Begin Search?',
+            message,
+            [
+                {
+                    text: 'Cancel', 
+                    onPress: () => {
+                        console.log('Reservation Search Canceled');
+                        this.resetForm();
+                    }, 
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK', 
+                    onPress: () => {this.resetForm()}
+                }
+            ],
+            { cancelable: false }
+        );
     }
 
     resetForm() {
@@ -34,18 +55,7 @@ class Reservation extends Component {
             campers: 1,
             hikeIn: false,
             date: new Date(),
-            showCalendar: false,
-        });
-    }
-            
-
-    handleReservation() {
-        console.log(JSON.stringify(this.state));
-        this.setState({
-            campers: 1,
-            hikeIn: false,
-            date: new Date(),
-            showCalendar: false     
+            showCalendar: false
         });
     }
 
@@ -104,29 +114,11 @@ class Reservation extends Component {
                     />
                 )}
                     <View style={styles.formRow}>
-                        <Button
-                            onPress={() => 
-                                Alert.alert(
-                                    "Begin Search?",
-                                    `Number of Campers: ${this.state.campers} \n\nHike-In? ${this.state.hikeIn} \n\nDate: ${this.state.
-                                        date.toLocalDateString} `,
-                                    [
-                                        {
-                                            text: "Cancel",
-                                            style: "cancel",
-                                            onPress: () => console.log("Cancel Pressed"),
-                                        },
-                                        {
-                                            text: "OK",
-                                            onPress: () => console.log("OK Pressed"),
-                                        },
-                                    ],
-                                    { cancelable: true }
-                                )    
-                            }
+                    <Button
+                            onPress={() => this.handleReservation()}
                             title='Search'
                             color='#5637DD'
-                            accessibilityLabel="Tap me to search for available campsites to reserve"
+                            accessibilityLabel='Tap me to search for available campsites to reserve'
                         />
                     </View>
                 </Animatable.View>
